@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel
 } from '@/components/ui/dropdown-menu';
 import { ButtonCustom } from '@/components/ui/button-custom';
-import { Plus, FileTemplate } from 'lucide-react';
+import { Plus, FileText } from 'lucide-react';
 import { BadgeCustom } from '@/components/ui/badge-custom';
 
 interface TemplateMenuProps {
@@ -63,7 +63,7 @@ export function TemplateMenu({ type, onRegularAdd }: TemplateMenuProps) {
             showBadge={false}
           >
             <DropdownMenuItem>
-              <FileTemplate className="h-4 w-4 mr-2" />
+              <FileText className="h-4 w-4 mr-2" />
               <span>{template}</span>
             </DropdownMenuItem>
           </ProFeature>
