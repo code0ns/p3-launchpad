@@ -1,10 +1,10 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Container } from "@/components/layout/Container";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card-custom";
 import { ButtonCustom } from "@/components/ui/button-custom";
-import { Card } from "@/components/ui/Card";
+import { ArrowRight } from "lucide-react";
 
 type BusinessStage = "Just starting" | "Building MVP" | "Testing idea" | "Selling already";
 
@@ -49,7 +49,6 @@ const Setup = () => {
     if (step < totalSteps - 1) {
       handleTransition(() => setStep(step + 1));
     } else {
-      // Save to localStorage for persistence
       localStorage.setItem('p3SetupData', JSON.stringify(setupData));
       navigate('/dashboard');
     }
@@ -80,7 +79,7 @@ const Setup = () => {
       case 0:
         return (
           <div className="w-full max-w-md">
-            <textarea
+            <Textarea
               value={setupData.businessIdea}
               onChange={(e) => updateSetupData("businessIdea", e.target.value)}
               placeholder="Briefly describe your business idea..."

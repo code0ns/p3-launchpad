@@ -1,15 +1,13 @@
-
 import { useState, useEffect } from "react";
 import { Container } from "@/components/layout/Container";
 import { Header } from "@/components/layout/Header";
-import { Card, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card, CardTitle, CardContent } from "@/components/ui/card-custom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ButtonCustom } from "@/components/ui/button-custom";
-import { Plus, Edit, Save, User, Briefcase, DollarSign } from "lucide-react";
+import { Plus, Edit, Save, User, Briefcase, DollarSign, ArrowRight } from "lucide-react";
 
-// Simplified type for dashboard data
 interface DashboardData {
   people: {
     strengths: string;
@@ -58,7 +56,6 @@ const Dashboard = () => {
   const [setupData, setSetupData] = useState<any>(null);
 
   useEffect(() => {
-    // Load data from localStorage
     const savedSetupData = localStorage.getItem('p3SetupData');
     if (savedSetupData) {
       setSetupData(JSON.parse(savedSetupData));
@@ -71,7 +68,6 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    // Save to localStorage on change
     localStorage.setItem('p3DashboardData', JSON.stringify(dashboardData));
   }, [dashboardData]);
 
@@ -83,7 +79,6 @@ const Dashboard = () => {
   const handleSave = (section: string, category: keyof DashboardData) => {
     const updatedData = { ...dashboardData };
     
-    // Update the specific section based on category and section
     if (category === 'people') {
       if (section === 'collaborator' && tempFormData.name) {
         if (editing === 'new-collaborator') {
@@ -1022,3 +1017,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

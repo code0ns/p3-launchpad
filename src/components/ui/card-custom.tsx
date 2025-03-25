@@ -5,9 +5,10 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   interactive?: boolean;
+  onClick?: () => void; // Added onClick prop
 }
 
-export function Card({ children, className, interactive = false }: CardProps) {
+export function Card({ children, className, interactive = false, onClick }: CardProps) {
   return (
     <div
       className={cn(
@@ -15,6 +16,7 @@ export function Card({ children, className, interactive = false }: CardProps) {
         interactive && "hover:shadow-glow transition-all duration-300 cursor-pointer",
         className
       )}
+      onClick={onClick}
     >
       {children}
     </div>
