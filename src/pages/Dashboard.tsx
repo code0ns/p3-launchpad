@@ -6,7 +6,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ButtonCustom } from "@/components/ui/button-custom";
-import { Plus, Edit, Save, User, Briefcase, DollarSign, ArrowRight } from "lucide-react";
+import { 
+  Plus, Edit, Save, User, Briefcase, DollarSign, 
+  ArrowRight, Target
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import { ExportButton } from "@/components/premium/ExportButton";
+import { SmartReminders } from "@/components/premium/SmartReminders";
+import { TemplateMenu } from "@/components/premium/TemplateMenu";
+import { AdvancedFinancialView } from "@/components/premium/AdvancedFinancialView";
+import { FoundersCircle } from "@/components/premium/FoundersCircle";
+import { GoalTracker } from "@/components/premium/GoalTracker";
+import { BadgeCustom } from "@/components/ui/badge-custom";
 
 interface DashboardData {
   people: {
@@ -400,14 +411,23 @@ const Dashboard = () => {
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
             <h4 className="font-medium">Main Workflow</h4>
-            <button
-              onClick={() => handleEdit('workflow', { 
-                steps: [...dashboardData.process.workflow]
-              })}
-              className="text-sm text-muted-foreground hover:text-black transition-colors"
-            >
-              <Edit className="h-4 w-4" />
-            </button>
+            {editing === 'workflow' ? (
+              <button
+                onClick={handleCancel}
+                className="text-sm text-muted-foreground hover:text-black transition-colors"
+              >
+                Cancel
+              </button>
+            ) : (
+              <button
+                onClick={() => handleEdit('workflow', { 
+                  steps: [...dashboardData.process.workflow]
+                })}
+                className="text-sm text-muted-foreground hover:text-black transition-colors"
+              >
+                <Edit className="h-4 w-4" />
+              </button>
+            )}
           </div>
           
           {editing === 'workflow' ? (
@@ -489,13 +509,14 @@ const Dashboard = () => {
       <section>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">🔁 Repeatable Tasks</h3>
-          <ButtonCustom
-            onClick={() => handleEdit('new-task', { title: '', steps: [] })}
-            size="sm"
-            className="h-8 px-3 py-1"
-          >
-            <Plus className="h-4 w-4 mr-1" /> Add Checklist
-          </ButtonCustom>
+          {editing && editing.includes('task') ? (
+            null
+          ) : (
+            <TemplateMenu 
+              type="checklist"
+              onRegularAdd={() => handleEdit('new-task', { title: '', steps: [] })}
+            />
+          )}
         </div>
         
         {editing && editing.includes('task') ? (
@@ -609,13 +630,14 @@ const Dashboard = () => {
       <section>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">🛠️ Tools I Use</h3>
-          <ButtonCustom
-            onClick={() => handleEdit('new-tool', { name: '', url: '' })}
-            size="sm"
-            className="h-8 px-3 py-1"
-          >
-            <Plus className="h-4 w-4 mr-1" /> Add Tool
-          </ButtonCustom>
+          {editing && editing.includes('tool') ? (
+            null
+          ) : (
+            <TemplateMenu 
+              type="tool"
+              onRegularAdd={() => handleEdit('new-tool', { name: '', url: '' })}
+            />
+          )}
         </div>
         
         {editing && editing.includes('tool') ? (
@@ -866,155 +888,3 @@ const Dashboard = () => {
                     <label className="text-sm font-medium mb-1 block">Income ($)</label>
                     <Input
                       type="number"
-                      placeholder="0.00"
-                      value={tempFormData.income || 0}
-                      onChange={(e) => setTempFormData({ ...tempFormData, income: parseFloat(e.target.value) || 0 })}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium mb-1 block">Expense ($)</label>
-                    <Input
-                      type="number"
-                      placeholder="0.00"
-                      value={tempFormData.expense || 0}
-                      onChange={(e) => setTempFormData({ ...tempFormData, expense: parseFloat(e.target.value) || 0 })}
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end space-x-2 pt-2">
-                  <button
-                    onClick={handleCancel}
-                    className="text-sm text-muted-foreground hover:text-black transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => handleSave('finance', 'profit')}
-                    className="text-sm flex items-center gap-1 font-medium"
-                  >
-                    <Save className="h-3 w-3" /> Save
-                  </button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ) : null}
-        
-        <Card>
-          <CardContent className="pt-4">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left font-medium px-3 py-2">Date</th>
-                    <th className="text-left font-medium px-3 py-2">Description</th>
-                    <th className="text-right font-medium px-3 py-2">Income</th>
-                    <th className="text-right font-medium px-3 py-2">Expense</th>
-                    <th className="text-right font-medium px-3 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dashboardData.profit.finances.map((item, index) => (
-                    <tr key={index} className="border-b last:border-b-0">
-                      <td className="px-3 py-2">{item.date}</td>
-                      <td className="px-3 py-2">{item.description || '-'}</td>
-                      <td className="px-3 py-2 text-right">${item.income.toFixed(2)}</td>
-                      <td className="px-3 py-2 text-right">${item.expense.toFixed(2)}</td>
-                      <td className="px-3 py-2 text-right">
-                        <button
-                          onClick={() => handleEdit(`finance-${index}`, { ...item })}
-                          className="text-sm text-muted-foreground hover:text-black transition-colors"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr className="font-medium">
-                    <td colSpan={2} className="px-3 py-2 text-right">Net Profit:</td>
-                    <td colSpan={3} className="px-3 py-2 text-right">${calculateNetProfit().toFixed(2)}</td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-    </div>
-  );
-
-  return (
-    <div className="min-h-screen flex flex-col bg-secondary/30">
-      <Header />
-      
-      <main className="flex-1 pt-16">
-        <Container>
-          {setupData && (
-            <div className="mb-6">
-              <div className="flex gap-1 items-center mb-2">
-                <span className="text-xs font-medium bg-black text-white px-2 py-0.5 rounded-full">
-                  {setupData.stage}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  • {setupData.founders === 'solo' ? 'Solo Founder' : 'Co-Founders'}
-                </span>
-              </div>
-              <h1 className="text-2xl font-bold">{setupData.businessIdea}</h1>
-            </div>
-          )}
-          
-          <Tabs 
-            defaultValue="people" 
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsList className="grid grid-cols-3 mb-8">
-              <TabsTrigger 
-                value="people" 
-                className="flex items-center gap-2 py-3"
-                onClick={() => setActiveTab("people")}
-              >
-                <User className="h-4 w-4" />
-                <span>People</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="process" 
-                className="flex items-center gap-2 py-3"
-                onClick={() => setActiveTab("process")}
-              >
-                <Briefcase className="h-4 w-4" />
-                <span>Process</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="profit" 
-                className="flex items-center gap-2 py-3"
-                onClick={() => setActiveTab("profit")}
-              >
-                <DollarSign className="h-4 w-4" />
-                <span>Profit</span>
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="people" className="mt-0">
-              {renderPeopleTab()}
-            </TabsContent>
-            
-            <TabsContent value="process" className="mt-0">
-              {renderProcessTab()}
-            </TabsContent>
-            
-            <TabsContent value="profit" className="mt-0">
-              {renderProfitTab()}
-            </TabsContent>
-          </Tabs>
-        </Container>
-      </main>
-    </div>
-  );
-};
-
-export default Dashboard;
-

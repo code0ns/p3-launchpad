@@ -32,12 +32,18 @@ export function Header({ transparent = false }: HeaderProps) {
         <Link to="/" className="font-semibold text-xl tracking-tight">
           P3 Starter
         </Link>
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-4">
           <Link 
             to="/dashboard" 
             className="px-4 py-2 rounded-full text-sm text-black hover:bg-black/5 transition-colors"
           >
             Dashboard
+          </Link>
+          <Link 
+            to="/pricing" 
+            className="px-4 py-2 rounded-full text-sm text-black hover:bg-black/5 transition-colors"
+          >
+            Pricing
           </Link>
         </div>
       </div>
