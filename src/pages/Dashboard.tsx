@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Container } from "@/components/layout/Container";
 import { Header } from "@/components/layout/Header";
@@ -8,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ButtonCustom } from "@/components/ui/button-custom";
 import { 
   Plus, Edit, Save, User, Briefcase, DollarSign, 
-  ArrowRight, Target
+  ArrowRight, Target, ArrowLeft
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ExportButton } from "@/components/premium/ExportButton";
@@ -888,3 +889,136 @@ const Dashboard = () => {
                     <label className="text-sm font-medium mb-1 block">Income ($)</label>
                     <Input
                       type="number"
+                      placeholder="0.00"
+                      value={tempFormData.income || ''}
+                      onChange={(e) => setTempFormData({ ...tempFormData, income: parseFloat(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Expense ($)</label>
+                    <Input
+                      type="number"
+                      placeholder="0.00"
+                      value={tempFormData.expense || ''}
+                      onChange={(e) => setTempFormData({ ...tempFormData, expense: parseFloat(e.target.value) || 0 })}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-2 pt-2">
+                  <button
+                    onClick={handleCancel}
+                    className="text-sm text-muted-foreground hover:text-black transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => handleSave('finance', 'profit')}
+                    className="text-sm flex items-center gap-1 font-medium"
+                  >
+                    <Save className="h-3 w-3" /> Save
+                  </button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
+        
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="text-left py-2 px-2 border-b">Date</th>
+                <th className="text-left py-2 px-2 border-b">Description</th>
+                <th className="text-right py-2 px-2 border-b">Income</th>
+                <th className="text-right py-2 px-2 border-b">Expense</th>
+                <th className="text-center py-2 px-2 border-b">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dashboardData.profit.finances.map((item, index) => (
+                <tr key={index} className="hover:bg-secondary/30">
+                  <td className="py-2 px-2">{item.date}</td>
+                  <td className="py-2 px-2">{item.description || "-"}</td>
+                  <td className="py-2 px-2 text-right">${item.income.toFixed(2)}</td>
+                  <td className="py-2 px-2 text-right">${item.expense.toFixed(2)}</td>
+                  <td className="py-2 px-2 text-center">
+                    <button
+                      onClick={() => handleEdit(`finance-${index}`, { ...item })}
+                      className="text-sm text-muted-foreground hover:text-black transition-colors"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="font-medium">
+                <td colSpan={2} className="py-2 px-2 text-right">Net Profit:</td>
+                <td colSpan={3} className="py-2 px-2 text-right">
+                  ${calculateNetProfit().toFixed(2)}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        
+        <div className="mt-4">
+          <AdvancedFinancialView />
+        </div>
+      </section>
+    </div>
+  );
+
+  return (
+    <>
+      <Header />
+      <Container className="pt-24">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <ExportButton />
+        </div>
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid grid-cols-3 mb-8 w-full max-w-md mx-auto">
+            <TabsTrigger value="people" className="gap-2">
+              <User className="w-4 h-4" /> People
+            </TabsTrigger>
+            <TabsTrigger value="process" className="gap-2">
+              <Briefcase className="w-4 h-4" /> Process 
+            </TabsTrigger>
+            <TabsTrigger value="profit" className="gap-2">
+              <DollarSign className="w-4 h-4" /> Profit
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="people" className="mt-0">
+            {renderPeopleTab()}
+          </TabsContent>
+          
+          <TabsContent value="process" className="mt-0">
+            {renderProcessTab()}
+          </TabsContent>
+          
+          <TabsContent value="profit" className="mt-0">
+            {renderProfitTab()}
+          </TabsContent>
+        </Tabs>
+        
+        <div className="mt-16">
+          <SmartReminders />
+        </div>
+        
+        <div className="mt-12">
+          <GoalTracker />
+        </div>
+        
+        <div className="mt-12">
+          <FoundersCircle />
+        </div>
+      </Container>
+    </>
+  );
+};
+
+export default Dashboard;

@@ -1,10 +1,12 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card-custom";
 import { ButtonCustom } from "@/components/ui/button-custom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
+import { Container } from "@/components/layout/Container";
 
 type BusinessStage = "Just starting" | "Building MVP" | "Testing idea" | "Selling already";
 
